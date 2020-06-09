@@ -1,0 +1,20 @@
+---
+- name: Converge
+  hosts: all
+  gather_facts: yes
+  remote_user: root
+
+  vars:
+    role_path: "{{ lookup('env', 'ROLE_PATH') }}"
+
+  pre_tasks:
+    - name: Debug
+      debug:
+        msg: {
+          "ansible_env": "{{ ansible_env }}",
+          "architecture": "{{ ansible_architecture }}",
+        }
+        verbosity: 1
+
+  roles:
+    - name: "{{ role_path if role_path is defined and role_path else lookup('env', 'HOME') + '/ansible-role-wkhtmltopdf' }}"

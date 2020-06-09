@@ -1,0 +1,38 @@
+---
+- name: wkhtmltopdf | check if binary is present
+  find:
+    paths: 
+      - /usr/bin
+      - /usr/local/bin
+    patterns: wkhtmltopdf
+    recurse: yes
+  register: wkhtmltopdf_find
+
+- name: wkhtmltopdf | install package
+  block:
+    - name: wkhtmltopdf | install runtime dependencies
+      apt:
+        name: "{{ wkhtmltopdf_dependencies }}"
+        update_cache: yes
+        state: present
+
+    - name: wkhtmltopdf | download archive from GitHub
+      get_url:
+        url: "{{ wkhtmltopdf_base_url }}/{{ wkhtmltopdf_version }}/wkhtmltox_{{ wkhtmltopdf_version }}-1.{{ ansible_distribution_release }}_{{ (ansible_architecture == 'x86_64') | ternary('amd64', 'i386') }}.deb"
+        dest: "/tmp/wkhtmltopdf-{{ wkhtmltopdf_version }}-{{ ansible_distribution_release }}.deb"
+      register: wkhtmltopdf_archive
+      
+    - name: wkhtmltopdf | install package using dpkg
+      apt:
+        deb: "{{ wkhtmltopdf_archive.dest }}"
+
+    - name: wkhtmltopdf | install remaining dependencies
+      shell: 
+        cmd: apt-get install -f
+        warn: no
+
+    - name: wkhtmltopdf | cleanup
+      file:
+        path: "{{ wkhtmltopdf_archive.dest }}"
+        state: absent
+  when: wkhtmltopdf_find.matched == 0

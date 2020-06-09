@@ -1,0 +1,5 @@
+---
+wkhtmltopdf_base_url: https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download
+wkhtmltopdf_version: "0.12.5"
+wkhtmltopdf_dependencies:
+  - fontconfig

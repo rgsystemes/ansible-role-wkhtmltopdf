@@ -1,0 +1,15 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: no
+
+  tasks:
+    - name: Get current version
+      shell: 
+        cmd: wkhtmltopdf -V
+      register: wkhtmltox_version
+
+    - name: Verify 
+      assert: 
+        that: 
+          - wkhtmltox_version.stdout == 'wkhtmltopdf {{ wkhtmltopdf_version }} (with patched qt)'
