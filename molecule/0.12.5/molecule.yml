@@ -24,7 +24,9 @@ provisioner:
   inventory:
     group_vars:
       all:
-        wkhtmltopdf_base_url: https://github.com/wkhtmltopdf/packaging/releases/download/
-        wkhtmltopdf_version: 0.12.6.1-2
+        wkhtmltopdf_base_url: https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/
+        wkhtmltopdf_version: 0.12.5
+        wkhtmltopdf_os_release: buster
+        wkhtmltopdf_tag: 0.12.5-1
 verifier:
   name: ansible
