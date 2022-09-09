@@ -1,23 +1,20 @@
 ---
 galaxy_info:
+  namespace: rgsystem
   role_name: wkhtmltopdf 
   author: Frank Fidanza
   company: RG System
   description: Installs [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf) (precompiled binary) and it's dependencies for Ubuntu/Debian.
   license: "license (BSD, MIT)"
-  min_ansible_version: 2.8
-
+  min_ansible_version: '2.13'
   platforms:
     - name: Debian
       versions:
-        - buster
+        - bullseye
     - name: Ubuntu
       versions:
         - focal
-        - bionic
-
   galaxy_tags:
     - wkhtmltopdf
     - pdf
-
 dependencies: []

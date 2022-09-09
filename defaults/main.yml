@@ -1,5 +1,13 @@
 ---
-wkhtmltopdf_base_url: https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download
-wkhtmltopdf_version: "0.12.5"
-wkhtmltopdf_dependencies:
+# Wkhtmltopdf installation apt requirements
+wkhtmltopdf_dependencies: 
   - fontconfig
+# The repository to download from
+# Use https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/ for older releases
+wkhtmltopdf_base_url: https://github.com/wkhtmltopdf/packaging/releases/download/
+# Wkhtmltopdf version, including release number 
+wkhtmltopdf_version: 0.12.6.1-2
+# This is a wildcard variable allowing the force a different distribution name than the destination host 
+# wkhtmltopdf_os_release: ''
+# GitHub tag to set for correct URL for some releases
+# wkhtmltopdf_tag: ''
