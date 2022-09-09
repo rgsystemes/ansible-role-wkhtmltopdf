@@ -6,9 +6,10 @@ verify_ssl = true
 [dev-packages]
 
 [packages]
-ansible = ">=2.9.5"
-ansible-lint = "*"
+ansible = ">=5"
+ansible-core = ">=2.12"
+ansible-lint = "6.3.0"
 yamllint = "*"
 docker = "*"
-molecule = "==3.0.4"
-python-vagrant = "*"
+molecule = "*"
+molecule-docker = "*"

@@ -1,0 +1,55 @@
+---
+name: test
+on:
+  repository_dispatch:
+    types: test
+  pull_request:
+    branches:
+      - "*"
+env:
+  PY_COLORS: "1"
+  ANSIBLE_FORCE_COLOR: "1"
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        distro:
+          - debian11
+          - ubuntu2004
+        scenario:
+          - default
+          - 0.12.5
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v2
+      - name: Prepare
+        shell: bash
+        run: |
+          python --version
+          sudo -H pip install --upgrade pip pipenv
+      - name: Cache pipenv
+        uses: actions/cache@v3
+        env:
+          cache-name: pipenv
+        with:
+          path: ~/.cache/pipenv
+          key: ${{ env.cache-name }}-${{ hashFiles('Pipfile.lock') }}
+          restore-keys: |
+            ${{ env.cache-name }}-${{ hashFiles('Pipfile.lock') }}
+            ${{ env.cache-name }}-
+      - name: Install dependencies
+        shell: bash
+        run: |
+          pipenv install
+      - name: Run version check
+        shell: bash
+        run: |
+          pipenv run molecule --version
+      - name: Run tests
+        shell: bash
+        run: |
+          pipenv run molecule test --scenario-name ${MOLECULE_SCENARIO}
+        env:
+          MOLECULE_DISTRO: ${{ matrix.distro }}
+          MOLECULE_SCENARIO: ${{ matrix.scenario }}
