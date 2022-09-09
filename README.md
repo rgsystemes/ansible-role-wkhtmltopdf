@@ -5,7 +5,7 @@ Installs [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf) (precompiled 
 
 Tested with :
 - Debian 11.x :heavy_check_mark:
-- Ubuntu 20.04.x :heavy_check_mark:
+- Debian 10.x :heavy_check_mark:
 
 Role Variables
 --------------
