@@ -1,17 +1,10 @@
 ---
-- name: Load OS-specific variables
-  include_vars: "{{ item }}"
-  with_first_found:
-    - "{{ role_path }}/vars/{{ ansible_distribution_release }}.yml"
-    - "{{ role_path }}/vars/empty.yml"
-  tags: ['always']
+- name: Wkhtmltopdf | set os_release to compute download URL
+  ansible.builtin.set_fact:
+    __os_release: "{{ wkhtmltopdf_os_release | default(ansible_distribution_release) }}"
 
-- name: Set os_release to compute download URL
-  set_fact:
-    __os_release: "{{ os_release | default(ansible_distribution_release) }}"
-
-- name: wkhtmltopdf | check if binary is present
-  find:
+- name: Wkhtmltopdf | check if binary is present
+  ansible.builtin.find:
     paths: 
       - /usr/bin
       - /usr/local/bin
@@ -19,31 +12,30 @@
     recurse: yes
   register: wkhtmltopdf_find
 
-- name: wkhtmltopdf | install package
+- name: Wkhtmltopdf | install package
   block:
-    - name: wkhtmltopdf | install runtime dependencies
-      apt:
+    - name: Wkhtmltopdf | install runtime dependencies
+      ansible.builtin.apt:
         name: "{{ wkhtmltopdf_dependencies }}"
         update_cache: yes
         state: present
 
-    - name: wkhtmltopdf | download archive from GitHub
-      get_url:
-        url: "{{ wkhtmltopdf_base_url }}/{{ wkhtmltopdf_version }}/wkhtmltox_{{ wkhtmltopdf_version }}-1.{{ __os_release }}_{{ (ansible_architecture == 'x86_64') | ternary('amd64', 'i386') }}.deb"
-        dest: "/tmp/wkhtmltopdf-{{ wkhtmltopdf_version }}-{{ ansible_distribution_release }}.deb"
+    - name: Wkhtmltopdf | download archive from GitHub
+      ansible.builtin.get_url:
+        # Example URLs
+        # https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_arm64.deb 
+        # https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb
+        url: "{{ wkhtmltopdf_base_url }}/{{ wkhtmltopdf_version }}/wkhtmltox_{{ wkhtmltopdf_tag | default(wkhtmltopdf_version) }}.{{ __os_release }}_{{ (ansible_architecture == 'x86_64') | ternary('amd64', 'i386') }}.deb"
+        dest: "/tmp/wkhtmltopdf-{{ wkhtmltopdf_version }}-{{ __os_release }}.deb"
+        mode: '0644'
       register: wkhtmltopdf_archive
       
-    - name: wkhtmltopdf | install package using dpkg
-      apt:
+    - name: Wkhtmltopdf | install package using dpkg
+      ansible.builtin.apt:
         deb: "{{ wkhtmltopdf_archive.dest }}"
 
-    - name: wkhtmltopdf | install remaining dependencies
-      shell: 
-        cmd: apt-get install -f
-        warn: no
-
-    - name: wkhtmltopdf | cleanup
-      file:
+    - name: Wkhtmltopdf | cleanup
+      ansible.builtin.file:
         path: "{{ wkhtmltopdf_archive.dest }}"
         state: absent
   when: wkhtmltopdf_find.matched == 0
