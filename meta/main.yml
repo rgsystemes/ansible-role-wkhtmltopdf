@@ -1,6 +1,6 @@
 ---
 galaxy_info:
-  namespace: rgsystem
+  namespace: rgsystemes
   role_name: wkhtmltopdf 
   author: Frank Fidanza
   company: RG System
