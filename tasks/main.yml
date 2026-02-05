@@ -1,15 +1,11 @@
 ---
-- name: Wkhtmltopdf | set os_release to compute download URL
-  ansible.builtin.set_fact:
-    __os_release: "{{ wkhtmltopdf_os_release | default(ansible_distribution_release) }}"
-
 - name: Wkhtmltopdf | check if binary is present
   ansible.builtin.find:
-    paths: 
+    paths:
       - /usr/bin
       - /usr/local/bin
     patterns: wkhtmltopdf
-    recurse: yes
+    recurse: true
   register: wkhtmltopdf_find
 
 - name: Wkhtmltopdf | install package
@@ -17,16 +13,13 @@
     - name: Wkhtmltopdf | install runtime dependencies
       ansible.builtin.apt:
         name: "{{ wkhtmltopdf_dependencies }}"
-        update_cache: yes
+        update_cache: true
         state: present
 
     - name: Wkhtmltopdf | download archive from GitHub
       ansible.builtin.get_url:
-        # Example URLs
-        # https://github.com/wkhtmltopdf/packaging/releases/download/0.12.6.1-2/wkhtmltox_0.12.6.1-2.bullseye_arm64.deb 
-        # https://github.com/wkhtmltopdf/wkhtmltopdf/releases/download/0.12.5/wkhtmltox_0.12.5-1.buster_amd64.deb
-        url: "{{ wkhtmltopdf_base_url }}/{{ wkhtmltopdf_version }}/wkhtmltox_{{ wkhtmltopdf_tag | default(wkhtmltopdf_version) }}.{{ __os_release }}_{{ (ansible_architecture == 'x86_64') | ternary('amd64', 'i386') }}.deb"
-        dest: "/tmp/wkhtmltopdf-{{ wkhtmltopdf_version }}-{{ __os_release }}.deb"
+        url: "{{ wkhtmltopdf_base_url }}/{{ wkhtmltopdf_version }}/wkhtmltox_{{ wkhtmltopdf_tag | default(wkhtmltopdf_version) }}.bullseye_amd64.deb"
+        dest: "/tmp/wkhtmltopdf-{{ wkhtmltopdf_version }}-bullseye.deb"
         mode: '0644'
       register: wkhtmltopdf_archive
       

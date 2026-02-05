@@ -11,9 +11,7 @@ galaxy_info:
     - name: Debian
       versions:
         - bullseye
-    - name: Ubuntu
-      versions:
-        - focal
+        - trixie
   galaxy_tags:
     - wkhtmltopdf
     - pdf
