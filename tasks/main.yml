@@ -1,4 +1,32 @@
 ---
+- name: Wkhtmltopdf | List installed packages
+  ansible.builtin.package_facts:
+
+- name: Wkhtmltopdf | Manage libssl1.1 package
+  when:
+    - ansible_facts['distribution'] == "Debian"
+    - ansible_facts['distribution_major_version'] | int > 11
+    - "'libssl1.1' not in ansible_facts['packages']"
+  block:
+    - name: Wkhtmltopdf | Download libssl1.1 package
+      ansible.builtin.get_url:
+        url: https://ftp.debian.org/debian/pool/main/o/openssl/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+        dest: /tmp/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+        mode: '0644'
+        checksum: sha256:aadf8b4b197335645b230c2839b4517aa444fd2e8f434e5438c48a18857988f7
+      register: download_libssl1_1
+
+    - name: Wkhtmltopdf | Install libssl1.1 package
+      ansible.builtin.apt:
+        deb: /tmp/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+      when: download_libssl1_1 is changed
+
+    - name: Wkhtmltopdf | Remove libssl1.1 package
+      ansible.builtin.file:
+        path: /tmp/libssl1.1_1.1.1w-0+deb11u1_amd64.deb
+        state: absent
+      when: download_libssl1_1 is changed
+
 - name: Wkhtmltopdf | check if binary is present
   ansible.builtin.find:
     paths:
@@ -18,11 +46,11 @@
 
     - name: Wkhtmltopdf | download archive from GitHub
       ansible.builtin.get_url:
-        url: "{{ wkhtmltopdf_base_url }}/{{ wkhtmltopdf_version }}/wkhtmltox_{{ wkhtmltopdf_tag | default(wkhtmltopdf_version) }}.bullseye_amd64.deb"
+        url: "{{ wkhtmltopdf_base_url }}/{{ wkhtmltopdf_version }}/{{ wkhtmltopdf_package }}"
         dest: "/tmp/wkhtmltopdf-{{ wkhtmltopdf_version }}-bullseye.deb"
         mode: '0644'
       register: wkhtmltopdf_archive
-      
+
     - name: Wkhtmltopdf | install package using dpkg
       ansible.builtin.apt:
         deb: "{{ wkhtmltopdf_archive.dest }}"
