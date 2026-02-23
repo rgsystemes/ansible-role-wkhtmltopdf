@@ -1,19 +1,17 @@
 ---
 galaxy_info:
   namespace: rgsystemes
-  role_name: wkhtmltopdf 
+  role_name: wkhtmltopdf
   author: Frank Fidanza
   company: RG System
-  description: Installs [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf) (precompiled binary) and it's dependencies for Ubuntu/Debian.
+  description: Installs [wkhtmltopdf](https://github.com/wkhtmltopdf/wkhtmltopdf)
   license: "license (BSD, MIT)"
   min_ansible_version: '2.13'
   platforms:
     - name: Debian
       versions:
         - bullseye
-    - name: Ubuntu
-      versions:
-        - focal
+        - trixie
   galaxy_tags:
     - wkhtmltopdf
     - pdf

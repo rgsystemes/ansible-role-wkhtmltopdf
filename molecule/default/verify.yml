@@ -1,0 +1,20 @@
+---
+- name: Verify
+  hosts: all
+  gather_facts: false
+
+  vars_files:
+    - ../../defaults/main.yml
+
+  tasks:
+    - name: Get current version
+      ansible.builtin.shell: >
+        wkhtmltopdf -V | awk '{print $2}'
+      register: installed_version
+
+    - name: Verify installed version
+      ansible.builtin.assert:
+        that: installed_version.stdout == wkhtmltopdf_version.split("-") | first
+        success_msg: >-
+          Expected version: {{ wkhtmltopdf_version.split("-") | first }}
+          Installed version: {{ installed_version.stdout }}
